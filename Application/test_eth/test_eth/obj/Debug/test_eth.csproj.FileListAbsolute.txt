@@ -1,0 +1,7 @@
+C:\Users\Lenovo\Desktop\ProjectCodes\LinkerVS\test_eth\test_eth\bin\Debug\test_eth.exe.config
+C:\Users\Lenovo\Desktop\ProjectCodes\LinkerVS\test_eth\test_eth\bin\Debug\test_eth.exe
+C:\Users\Lenovo\Desktop\ProjectCodes\LinkerVS\test_eth\test_eth\bin\Debug\test_eth.pdb
+C:\Users\Lenovo\Desktop\ProjectCodes\LinkerVS\test_eth\test_eth\obj\Debug\test_eth.csprojAssemblyReference.cache
+C:\Users\Lenovo\Desktop\ProjectCodes\LinkerVS\test_eth\test_eth\obj\Debug\test_eth.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo\Desktop\ProjectCodes\LinkerVS\test_eth\test_eth\obj\Debug\test_eth.exe
+C:\Users\Lenovo\Desktop\ProjectCodes\LinkerVS\test_eth\test_eth\obj\Debug\test_eth.pdb
