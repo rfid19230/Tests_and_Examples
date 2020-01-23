@@ -1,1 +1,70 @@
+// Программа для подключения к серверу в локальной сети и обмена данными с ним
 
+// Подключение заголовочных файлов
+#include <SPI.h>
+#include <Ethernet.h>
+
+// MAC-адрес контроллера (иногда указан на Ethernet Shield)
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+byte is_connected = 0;
+
+// Адрес сервера и порт
+byte srv_ip[] = {172, 18, 159, 30};
+int srv_port = 8005;
+
+// Создание Ethernet-клиента
+EthernetClient client;
+
+void setup() {
+  // Запуск COM-порта:
+  Serial.begin(9600);
+  // Ожидание запуска COM-порта
+  while (!Serial) {
+    delay(10);
+  }
+
+  // Запуск интернет-соединения:
+  Serial.println("Initializing Ethernet");
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("Ethernet initialization failed");
+    is_connected = 0;
+  } else {
+    // Вывод полученного IP-адреса при удачном запуске
+    Serial.print("Successful Ethernet initialization, my IP: ");
+    Serial.println(Ethernet.localIP());
+
+    // Попытка подключения к серверу
+    if (client.connect(srv_ip, srv_port)) {
+      is_connected = 1;
+      Serial.print("Connected to server ");
+      Serial.println(client.remoteIP());
+    } else {
+      // if you didn't get a connection to the server:
+      Serial.println("Сonnection to server failed");
+      is_connected = 0;
+    }
+  }
+}
+
+void loop() {
+  // Периодические попытки установить соединение до успеха
+  if (!is_connected) {
+    delay(10000);
+    setup();
+  }
+  // При успешном соединении обмен сообщениями с сервером
+  else {
+    // Отправка сообщения
+    client.println("Hello from client!");
+    Serial.println("Message sent");
+    // Получение ответа
+    Serial.println("Message received: ");
+    while (client.available()) {
+      char chr = client.read();
+      Serial.print(chr);
+    }
+    Serial.println();
+    // Отключение от сервера
+    client.stop();
+  }
+}
