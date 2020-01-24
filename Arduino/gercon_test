@@ -1,0 +1,58 @@
+// Пример кода для определения того, является дверь открытой или закрытой
+
+// Возможные сигналы геркона
+#define CLOSED 0
+#define OPENED 1
+
+// Пин, к которому подключен вывод S геркона
+int s = 52;
+
+// Для текущего и предыдущего состояния выхода геркона
+int current, previous;
+
+void setup() {
+  // Запуск последовательного порта и ожидание его открытия
+  Serial.begin(9600);
+  while (!Serial);
+
+  // Установка пина в режим входа
+  pinMode(s, INPUT);
+  digitalWrite(s, HIGH);
+
+  // Определение начального состояния геркона и вывод соответствующего сообщения
+  current = digitalRead(s);
+  Serial.print("Дверь была ");
+  if (current == CLOSED) {
+    Serial.println(" закрыта");
+  }
+  else {
+    Serial.println(" открыта");
+  }
+}
+
+void loop() {
+  // Промежуток между считываниями состояния геркона 0.5с
+  delay (500);
+
+  // Запоминание предыдущего состояния и считывание текущего
+  previous = current;
+  current = digitalRead(s);
+
+  // Вывод сообщения о состоянии двери
+  if (previous == current) {
+    if (current == CLOSED) {
+      Serial.println("Дверь все еще закрыта");
+    }
+    else {
+      Serial.println("Дверь все еще открыта");
+    }
+  }
+  else {
+    if (current == CLOSED) {
+      Serial.println("Зафиксировано закрытие двери");
+    }
+    else {
+      Serial.println("Зафиксировано открытие двери");
+    }
+  }
+}
