@@ -16,8 +16,7 @@ void setup() {
   while (!Serial);
 
   // Установка пина в режим входа
-  pinMode(s, INPUT);
-  digitalWrite(s, HIGH);
+  pinMode(s, INPUT_PULLUP);
 
   // Определение начального состояния геркона и вывод соответствующего сообщения
   current = digitalRead(s);
