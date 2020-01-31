@@ -1,0 +1,89 @@
+/*
+ * Считывание с возможностью повторного прикладывания одной и той же метки через определенное время, 
+ * другие метки могут быть приложены сразу.
+ */
+
+/* UID
+ * 0 символ - знак начала передачи (числовой код 2) 
+ * 1-2 символы - служебные
+ * 3-10 символы - собственно UID
+ * 11-12 символы - проверочные
+ * 13 символ - знак конца передачи (числовой код 3)
+ */
+
+// Определение длины uid, а также того,
+// с какого по какой символ его выводить на экран
+#define UID_LEN 14
+#define UID_FROM 3
+#define UID_TO 10
+
+// Время до повторного считывания одной и той же метки, мс
+#define DELAY_FOR_SAME 3000
+
+// Флаг повторения uid
+bool first = true;
+// Для хранения uid карт
+char uid[14], prev_uid[14];
+// Для подсчета времени между считываниями
+unsigned long m, prev_m;
+
+void setup() {
+  // Запуск последовательных портов (Serial для вывода информации о работе программы,
+  // по Serial1 производится обмен данным со считывателем)
+  Serial.begin(9600);
+  Serial1.begin(9600);
+  while (!Serial || !Serial1) {
+    delay(10);
+  }
+  while (Serial1.available()) {
+    Serial1.read();
+  }
+}
+
+void loop() {  
+  // Ожидание метки
+  while (Serial1.available() < 14) {
+    delay(10);
+  }
+
+  // Сохранение времени предыдущего считывания
+  if (!first) {
+    prev_m = m;
+  }
+  // Получение времени текущего считывания
+  m = millis();
+
+  // Считывание метки
+  for (int i = 0; i < UID_LEN; ++i) {
+    uid[i] = Serial1.read();
+  }
+
+  // Вывод uid метки при выполнении условий
+  if (first || are_different(uid, prev_uid) || (m - prev_m > DELAY_FOR_SAME)) {
+    for (int i = UID_FROM; i <= UID_TO; ++i) {
+      Serial.print(uid[i]);
+    }
+    Serial.println();
+  }
+
+  // Запоминание считанного uid
+  for (int i = 0; i < 14; ++i) {
+    prev_uid[i] = uid[i];
+  }
+  
+  first = false;
+}
+
+// Функция, проверяющая id меток на равенство
+// Возвращает false для одинаковых, иначе true
+bool are_different(char c1[14], char c2[14]) {
+  bool d = false;
+  int i = 0;
+
+  for (int i = 0; !d && i < 14; ++i) {
+    if (int(c1[i]) != int(c2[i])) {
+      d = true;
+    }
+  }
+  return d;
+}
